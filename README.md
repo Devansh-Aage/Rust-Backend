@@ -1,4 +1,4 @@
-# 🦀 Backend Rust Pro Roadmap (6 Weeks)
+# 🦀 Backend Rust Roadmap (6 Weeks)
 
 ### 🎯 Goal
 Be able to **design, build, debug, and deploy scalable production-grade backends** using  
