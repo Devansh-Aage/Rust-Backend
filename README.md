@@ -1,182 +1,209 @@
-# 🦀 Async Backend Rust Mastery Plan
+# 🦀 Backend Rust Pro Roadmap (6 Weeks)
 
-This is a **6-week roadmap** designed to take you from knowing only the Rust and Async books → to being **proficient in building scalable, production-grade backend systems in Rust**.
+### 🎯 Goal
+Be able to **design, build, debug, and deploy scalable production-grade backends** using  
+**Rust + Tokio + Axum + SQLx + Tracing.**
 
-You’ll build projects, solve practical challenges, and gradually learn tools used in real-world production environments like **Tokio, Axum, SQLx, Redis, and tracing**.
+Each week includes:
 
----
-
-## 🗓️ Overview
-
-| Week | Focus Area | Mini Project | Core Libraries |
-|------|-------------|---------------|----------------|
-| 1 | Async Core Foundations | Async Playground (toy server) | Tokio, async/await |
-| 2 | Networking Fundamentals | Echo Server + Chat Server | Tokio, TCP/UDP, Futures |
-| 3 | Web Framework Mastery | REST API with Axum | Axum, Tower, Serde, SQLx |
-| 4 | Database + Auth Systems | Auth + CRUD App | SQLx, JWT, bcrypt, Axum extractors |
-| 5 | Distributed Systems | Job Queue + Caching Layer | Redis, Tokio tasks, Channels |
-| 6 | Observability & Production | Full Microservice | Tracing, Metrics, Docker, CI/CD |
+- **Focus:** what you’ll master  
+- **Project:** the core thing you’ll build  
+- **Challenges:** smaller exercises that push you  
+- **Resources:** to dive deeper
 
 ---
 
-## 🧭 Week 1 — Async Foundations & Tokio Basics
+## 🗓️ Week 1 — Async & Axum Foundations
 
-**Goal:** Understand async/await deeply and how the executor works.
+### 🎯 Focus
+Understand async behavior enough to build your first Axum server confidently.
 
-### Learn
-- How async functions work under the hood (state machines)
-- Difference between blocking vs non-blocking
-- How `Tokio` runs tasks and spawns them
-- Futures, `.await`, `Pin`, and lifetimes in async
-- Async channels (`mpsc`, `broadcast`, `oneshot`)
+### 🧠 Concepts
+- Futures, `.await`, and task scheduling  
+- Tokio basics: `spawn`, `join!`, `select!`  
+- Channels (`mpsc`, `broadcast`)  
+- Axum basics: routes, extractors, JSON responses  
+- Shared state with `Arc<RwLock<T>>`
 
-### Project
-🧩 **Async Playground**
-- Build a CLI app that:
-  - Runs async tasks concurrently (like downloading multiple files or simulating delayed operations)
-  - Uses `join!`, `select!`, and `tokio::spawn`
+### 💻 Mini Challenges
+- Write an async function that runs 3 concurrent tasks with `tokio::join!`.  
+- Build a small `mpsc` channel demo: producer + 2 consumers.  
+- Use `tokio::select!` to race between a timer and a long task.
 
-### Challenges
-- Write your own `MiniExecutor` (custom runtime)
-- Implement a fake async "timer" using `tokio::time::sleep`
-- Benchmark sequential vs concurrent execution
+### 🧩 Project — Mini “Hello API” Server
+- Routes: `/health`, `/greet/:name`, `/time`  
+- Global state (request counter)  
+- Logging with `tracing`  
+- Graceful shutdown  
 
----
+### 📚 Resources
+- [Tokio Tutorial](https://tokio.rs/tokio/tutorial)
+- [Axum Getting Started](https://docs.rs/axum/latest/axum/)
+- [Jon Gjengset – Async in Rust (YouTube)](https://www.youtube.com/watch?v=9_3krAQtD2k)
 
-## ⚙️ Week 2 — Networking & Concurrency Models
-
-**Goal:** Learn how to handle low-level async IO and concurrency safely.
-
-### Learn
-- TCP/UDP sockets with Tokio
-- Streams & sinks (`AsyncRead`, `AsyncWrite`)
-- Task cancellation and graceful shutdown
-- Handling shared state across async tasks (Arc + Mutex)
-- Error propagation and `Result` handling in async contexts
-
-### Project
-💬 **Async Chat Server**
-- Multi-client chat app using TCP sockets
-- Broadcast messages to all connected clients
-- Use `tokio::sync::broadcast` or `mpsc`
-
-### Challenges
-- Add message history persistence
-- Implement server shutdown with Ctrl+C signal
-- Add authentication to chat server
+✅ **By end of Week 1:** You can spin up and reason about an async Axum app with concurrency and logging.
 
 ---
 
-## 🕸️ Week 3 — Building REST APIs with Axum
+## 🗓️ Week 2 — REST APIs & Middleware
 
-**Goal:** Become fluent with **Axum**, the async web framework.
+### 🎯 Focus
+Build full REST APIs, handle errors cleanly, and understand middleware flow.
 
-### Learn
-- Routing, extractors, middleware, response types
-- JSON (serde), form, query parameters
-- Layers (Tower) and error handling
-- Using shared app state
-- Structuring a multi-module backend project
+### 🧠 Concepts
+- Axum extractors (`Path`, `Query`, `Json`, `State`)  
+- Custom error types and `IntoResponse`  
+- Tower layers: request logging, timing  
+- JSON request/response validation with `serde`
 
-### Project
-🧱 **Book Library API**
-- CRUD endpoints for books (`GET /books`, `POST /books`)
-- In-memory storage (HashMap)
-- Proper error handling + middlewares (logging, CORS)
+### 💻 Mini Challenges
+- Implement your own logging middleware with `tower::Layer`.  
+- Create a unified `AppError` type and map it to `StatusCode`.  
+- Add input validation using `serde::Deserialize`.
 
-### Challenges
-- Add pagination and filtering
-- Add simple rate limiting middleware
-- Handle graceful shutdown with tracing logs
+### 🧩 Project — Task Manager API
+- CRUD routes: `/tasks`, `/tasks/:id`  
+- Shared `RwLock<HashMap>` store  
+- Custom error responses  
+- Request timing middleware
 
----
+### 📚 Resources
+- [Axum Error Handling Guide](https://docs.rs/axum/latest/axum/response/trait.IntoResponse.html)
+- [Tower HTTP Middleware Docs](https://docs.rs/tower-http/latest/tower_http/)
 
-## 🧩 Week 4 — Database Integration + Authentication
-
-**Goal:** Build production-style APIs with database + JWT auth.
-
-### Learn
-- SQLx for async DB access (Postgres or SQLite)
-- Migrations and connection pooling
-- Password hashing (`bcrypt`)
-- JWT authentication and middleware
-- Error handling patterns (`thiserror`, `anyhow`)
-
-### Project
-🔐 **Auth + CRUD App**
-- Users can sign up, log in, and manage their profiles
-- Protected routes with JWT
-- SQLx + Postgres setup
-
-### Challenges
-- Implement refresh tokens
-- Add async transactional operations
-- Integrate Docker for DB + app
+✅ **By end of Week 2:** You can design clean, modular REST APIs with proper middleware & error layers.
 
 ---
 
-## ⚡ Week 5 — Distributed Systems Concepts
+## 🗓️ Week 3 — Databases & SQLx
 
-**Goal:** Build async services that communicate & scale.
+### 🎯 Focus
+Connect your backend to a real database with async persistence.
 
-### Learn
-- Async job queues with Redis
-- Task scheduling and background workers
-- Using `tokio::sync::mpsc` for message passing
-- Handling backpressure and retries
+### 🧠 Concepts
+- SQLx: `query!`, `query_as!`, and `Pool`  
+- Connection pooling & migrations  
+- Mapping `sqlx::Error` to your API errors  
+- Transactions & prepared statements
 
-### Project
-🚀 **Job Queue + Caching Service**
-- REST API that enqueues jobs (e.g. email sending simulation)
-- Worker service consumes jobs and processes them
-- Add caching layer (Redis)
+### 💻 Mini Challenges
+- Connect to SQLite or Postgres using SQLx.  
+- Write migrations for `users` and `tasks` tables.  
+- Implement a repository layer to abstract DB calls.
 
-### Challenges
-- Add exponential backoff retries
-- Add metrics dashboard (processed jobs count)
-- Introduce inter-service communication (HTTP or channel)
+### 🧩 Project — Persistent Task API
+- Replace in-memory store with a database  
+- Implement CRUD via SQLx  
+- Add `migrate!()` macro + connection pool  
+- Use `.env` for DB URL
 
----
+### 📚 Resources
+- [SQLx Book](https://docs.rs/sqlx/latest/sqlx/)
+- [Axum + SQLx Example](https://github.com/tokio-rs/axum/tree/main/examples)
+- [Shuttle.rs Postgres Example](https://www.shuttle.rs/)
 
-## 🧠 Week 6 — Observability, Testing & Production
-
-**Goal:** Make your backend production-grade.
-
-### Learn
-- Tracing and structured logs (`tracing`, `tracing-subscriber`)
-- Metrics and Prometheus integration
-- Integration + load testing (`reqwest`, `tokio::test`)
-- Dockerizing async apps
-- CI/CD basics (GitHub Actions)
-
-### Project
-🌐 **Final Microservice**
-- Combine everything:
-  - Auth, REST API, background workers, caching
-  - Observability with tracing + metrics
-  - Docker-compose for DB + Redis + app
-
-### Challenges
-- Add distributed tracing (Jaeger or OpenTelemetry)
-- Deploy to fly.io or Railway
-- Write load tests with `wrk` or `k6`
+✅ **By end of Week 3:** You can build a full async API backed by a database.
 
 ---
 
-## 🏁 After Week 6 — Mastery Path
+## 🗓️ Week 4 — Auth, Sessions & Security
 
-Once you finish, go deeper into:
-- **Advanced async patterns:** `Pin`, `Future`, custom executors
-- **Performance tuning:** `tracing-flame`, `criterion`
-- **Microservice architecture:** gRPC with `tonic`
-- **Real production stacks:** Axum + SQLx + Redis + Kafka + OpenTelemetry
+### 🎯 Focus
+Add authentication, sessions, and security patterns.
+
+### 🧠 Concepts
+- JWT authentication (`jsonwebtoken` crate)  
+- Password hashing (`argon2` crate)  
+- Session state (cookies or tokens)  
+- Auth middleware and role-based access
+
+### 💻 Mini Challenges
+- Implement password hashing and verify login credentials.  
+- Write a middleware that extracts and validates JWT.  
+- Protect routes based on user roles (e.g., `/admin`).
+
+### 🧩 Project — Auth-Enabled Notes API
+- Routes: `/register`, `/login`, `/notes`  
+- JWT-based auth middleware  
+- Role-based authorization  
+- Store hashed passwords in DB
+
+### 📚 Resources
+- [jsonwebtoken crate](https://docs.rs/jsonwebtoken/latest/jsonwebtoken/)
+- [argon2 crate](https://docs.rs/argon2/latest/argon2/)
+- [Axum Auth Example](https://github.com/tokio-rs/axum/blob/main/examples/jwt.rs)
+
+✅ **By end of Week 4:** You can secure your APIs with authentication and session management.
 
 ---
 
-## 📚 Recommended References
+## 🗓️ Week 5 — Background Jobs & Concurrency
 
-- [Tokio Docs](https://tokio.rs/tokio/tutorial)
-- [Rust Async Book](https://rust-lang.github.io/async-book/)
-- [Axum Guide](https://docs.rs/axum/latest/axum/)
-- [SQLx Docs](https://docs.rs/sqlx/)
-- [Zero To Production in Rust (Book)](https://www.zero2prod.com/)
+### 🎯 Focus
+Design async systems that run jobs concurrently and cleanly.
+
+### 🧠 Concepts
+- Worker pools and message queues (`mpsc`, `broadcast`)  
+- Structured concurrency (`JoinSet`, cancellation)  
+- Scheduling periodic tasks (`tokio::time::interval`)  
+- Graceful shutdown of async workers
+
+### 💻 Mini Challenges
+- Create a job producer that spawns worker tasks.  
+- Implement periodic cleanup using `tokio::time::interval`.  
+- Handle `Ctrl+C` signal to cancel tasks cleanly.
+
+### 🧩 Project — Async Job Queue System
+- REST endpoint `/jobs` to enqueue tasks  
+- Worker pool that processes jobs asynchronously  
+- Job logs + retry logic  
+- Graceful shutdown with cancellation signals
+
+### 📚 Resources
+- [Structured Concurrency in Tokio](https://tokio.rs/tokio/topics/structured-concurrency)
+- [Tokio JoinSet Docs](https://docs.rs/tokio/latest/tokio/task/struct.JoinSet.html)
+- [Graceful Shutdown Example](https://tokio.rs/tokio/topics/shutdown)
+
+✅ **By end of Week 5:** You can orchestrate concurrent background work safely.
+
+---
+
+## 🗓️ Week 6 — Observability, Optimization & Deployment
+
+### 🎯 Focus
+Bring everything together into a production-ready service.
+
+### 🧠 Concepts
+- `tracing` + `tracing-subscriber` for structured logs  
+- Request metrics (Prometheus / Tower-Metrics)  
+- Performance benchmarking (Criterion)  
+- Dockerization & deployment (Fly.io / Shuttle)  
+- Config management with `.env`
+
+### 💻 Mini Challenges
+- Add structured request logs to your existing API.  
+- Expose a `/metrics` endpoint (Prometheus).  
+- Run `wrk` or `bombardier` load tests to profile bottlenecks.
+
+### 🧩 Capstone Project — Production-Ready Mini SaaS Backend
+- Axum + SQLx + JWT + Job Workers + Tracing  
+- Configurable via `.env`  
+- Metrics + logs  
+- Deploy on Fly.io or Docker
+
+### 📚 Resources
+- [tracing crate docs](https://docs.rs/tracing/latest/tracing/)
+- [Tokio Performance Tips](https://tokio.rs/tokio/topics/performance)
+- [Deploy Rust to Fly.io Guide](https://fly.io/docs/languages-and-frameworks/rust/)
+
+✅ **By end of Week 6:** You’ll have a production-grade backend deployed and observable — your **portfolio-ready project**.
+
+---
+
+### 🏁 Final Outcome
+By completing this roadmap, you’ll confidently:
+
+- Build scalable, concurrent backends using **Axum + Tokio**  
+- Design modular APIs with strong error handling  
+- Manage persistence, auth, background jobs, and observability  
+- Optimize and deploy Rust services for real production use
