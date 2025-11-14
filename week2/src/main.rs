@@ -8,6 +8,9 @@ mod handlers {
     pub mod query;
 }
 mod error;
+mod middleware {
+    pub mod logging;
+}
 
 #[tokio::main]
 async fn main() {
